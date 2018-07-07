@@ -96,3 +96,6 @@ simstring/
 
 # Ignored test file
 test.py
+*.iml
+docker/data/
+tests/data.txt

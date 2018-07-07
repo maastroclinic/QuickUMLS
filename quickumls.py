@@ -50,6 +50,10 @@ class QuickUMLS(object):
         simstring_fp = os.path.join(quickumls_fp, 'umls-simstring.db')
         cuisem_fp = os.path.join(quickumls_fp, 'cui-semtypes.db')
 
+        if not os.path.isdir(simstring_fp):
+            raise Exception('ERROR QuickUMLS data files not found, '
+                            'the following directory is not present', simstring_fp)
+
         self.valid_punct = constants.UNICODE_DASHES
         self.negations = constants.NEGATIONS
 
@@ -72,7 +76,10 @@ class QuickUMLS(object):
             simstring_fp, similarity_name, threshold
         )
         self.cuisem_db = toolbox.CuiSemTypesDB(cuisem_fp)
-        self.nlp = spacy.load('en')
+
+        spacymodel = os.environ.get('SPACYMODEL', 'en')
+        print('load spacy model=' + spacymodel)
+        self.nlp = spacy.load(spacymodel)
 
     def get_info(self):
         return self.info
