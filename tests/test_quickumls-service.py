@@ -20,7 +20,7 @@ TCP_IP = '127.0.0.1'
 TCP_PORT = 9999
 BUFFER_SIZE = 2048
 
-with open('data.txt', 'r') as reportfile:
+with open('resources/ignored/report.txt', 'r') as reportfile:
     MESSAGE = reportfile.read()
 
 data = {}
@@ -41,5 +41,5 @@ data_response_obj = {}
 data_response_obj['response'] = json.loads(data_response.decode("utf-8"))
 
 print("received data:", data)
-with open('data_result.txt', 'w') as outfile:
+with open('resources/ignored/data_result.txt', 'w') as outfile:
     json.dump(data_response_obj, outfile)
