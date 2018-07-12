@@ -94,6 +94,11 @@ kill -9 `cat nohup.pid`
 rm nohup.pid
 ```
 
+## Docker Usage
+
+Docker manual can be found [here](docker/README.md).
+
+
 ## References
 
 - Okazaki, Naoaki, and Jun'ichi Tsujii. "*Simple and efficient algorithm for approximate dictionary matching.*" COLING 2010.
