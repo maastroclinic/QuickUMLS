@@ -12,7 +12,7 @@ SPACYMODEL argument is optional, the default is "en"
 
     $ docker run --rm -v <local_quickumls_installation>:/data/quickumlsdb -p 9999:9999
      
-     -it --entrypoint=/bin/bash maastrodocker/quickumls
+    -it --entrypoint=/bin/bash maastrodocker/quickumls
         
 #### Run data image (Windows)
 
@@ -33,11 +33,14 @@ Solutions:
 ##### Add Quick UMLS installation files to the image
     
 1. Clone this repository
-2. relative to the Dockerfile create the directory ./data/quickumlsdb which contains your quickumls installation
+2. Relative to the Dockerfile create the directory ./data/quickumlsdb which contains your quickumls installation, directory structure:
+
+      - QuickUMLS/docker/data/quickumlsdb/cui-semtypes.db
+      - QuickUMLS/docker/data/quickumlsdb/umls-simstring.db
+
 3. Run
         
-    
-    $ docker build -t maastrodocker/quickumlsdataimage -f DockerfileDataImage .
+        $ docker build -t maastrodocker/quickumlsdataimage -f DockerfileDataImage .
 
 ###Develop
     
