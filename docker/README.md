@@ -15,7 +15,7 @@ To create a QuickUMLS datase execute the following steps.
 
         $ docker run --rm -v "<umls_installation_path>:/data/umls" -v "<local_quickumls_installation_path>:/data/quickumlsdb" -it --entrypoint /bin/bash maastrodocker/quickumls-en 
 
-5. Install the quickumls database (e.g. for Dutch)
+5. Install the quickumls database, as decribed in the [non-docker manual](https://github.com/Georgetown-IR-Lab/QuickUMLS#how-to-get-the-system-initialized) How To get the System Initialized (step 2 only). Be carefull UMLS uses ISO 639-2 for languages). Example for the Dutch language.
 
         bash-4.4# python install.py /data/umls /data/quickumlsdb -E DUT
 
@@ -24,9 +24,44 @@ To create a QuickUMLS datase execute the following steps.
         bash-4.4# exit
         
     
-### Run 
+## Run     
 
-Running the image as described below will result in a listing TCP connection on the specified port.
+### Volume bind (recommended)
+
+    $ docker run --rm -v <umls_installation_path>:/data/quickumlsdb -p 9999:9999 maastrodocker/quickumls-en
+    
+             
+### Windows
+
+Under Windows a volume bind will result in the following leveldb [error](https://github.com/google/leveldb/issues/281)
+
+Solutions:
+1. Use the [Windows 10 linux subsystem](https://docs.microsoft.com/en-us/windows/wsl/install-win10) (recommended)
+2. Add an existing QuickUMLS installation files to an image
+3. Use a DataVolume (not supported by IntelliJ)
+ 
+#### Add an existing QuickUMLS installation to an image
+    
+1. Clone this repository.
+2. Relative to the Dockerfile create the directory ./data/quickumlsdb 
+3. Copy an existing QuickUMLS installation to the created directory (from step 2), directory structure:
+
+      - QuickUMLS/docker/data/quickumlsdb/cui-semtypes.db
+      - QuickUMLS/docker/data/quickumlsdb/umls-simstring.db
+
+3. The English language is set as default, if you prefer another language, edit "DockerfileDataImage" to set the correct FROM image.
+4. Run
+        
+        $ docker build -t maastrodocker/quickumls-dataimage -f DockerfileDataImage .
+
+The file "DockerfileDataImage" will add a current QuickUMLS installation to a new image.                
+
+
+
+
+## Usage 
+
+Running the image as described in the RUN section will result in a listing TCP connection on the specified port.
 
 Request format is the folling JSON format ("text" is used as a key).
     
@@ -37,7 +72,6 @@ Talk to the TCP application from:
 - Python [example](../tests/test_quickumls-service.py)
 - NetCat
 
-    
 
 #### NetCat
 
@@ -54,57 +88,9 @@ Results in the following response (for Dutch QuickUMLS installation):
     [[{"start": 27, "end": 31, "ngram": "long", "term": "long", "cui": "C0024109", "similarity": 1.0, "semtypes": ["T023"], "preferred": 1}, {"start": 27, "end": 31, "ngram": "long", "term": "long", "cui": "C1278908", "similarity": 1.0, "semtypes": ["T023"], "preferred": 1}]]
 
 
-#### Volume bind (recommended)
-
-    $ docker run --rm -v <umls_installation_path>:/data/quickumlsdb -p 9999:9999 maastrodocker/quickumls-en
+## Development using Docker
     
-             
-#### Run data image (Windows)
-
-Under Windows a volume bind will result in the following leveldb [error](https://github.com/google/leveldb/issues/281)
-
-Solutions:
-1. Use the [Windows 10 linux subsystem](https://docs.microsoft.com/en-us/windows/wsl/install-win10) (recommended)
-2. Add Quick UMLS installation files to the image
-3. Use a DataVolume (not available in intellij)
- 
-##### Add an existing QuickUMLS installation to the image
-    
-1. Clone this repository.
-2. Relative to the Dockerfile create the directory ./data/quickumlsdb 
-3. Copy an existing QuickUMLS installation to the created directory (from step 2), directory structure:
-
-      - QuickUMLS/docker/data/quickumlsdb/cui-semtypes.db
-      - QuickUMLS/docker/data/quickumlsdb/umls-simstring.db
-
-3. The English language is set as default, if you prefer another language, edit "DockerfileDataImage" to set the correct FROM image.
-4. Run
-        
-        $ docker build -t maastrodocker/quickumls-dataimage -f DockerfileDataImage .
-
-The file "DockerfileDataImage" will add a current QuickUMLS installation to a new image.                
-
-### Build your own image
-
-The following images are available on dockerhub.
-
-- maastrodocker/quickumls-en
-- maastrodocker/quickumls-nl
-
-If you would prefer to build your own image:
-
-From the current folder
-
-    docker build -t maastrodocker/quickumls-en --build-arg SPACYMODEL=<model> .
-    
-SPACYMODEL argument is optional, the default is "en".
-It is recommended to include the spacy language model in the imagetag. 
-Be carefull UMLS uses ISO 639-2 for languages.
-
-
-### Development using Docker (required for Windows)
-    
-#### IntelliJ IDEA
+### IntelliJ IDEA
 
 1. Pull or build quickumls container
 2. Install plugins:
@@ -122,3 +108,20 @@ Be carefull UMLS uses ISO 639-2 for languages.
                 -v C:/git/nlp/maastro/QuickUMLS:/data/quickumlsdb -e PYTHONPATH=/opt/pythonmodules
     
 6. QuickUMLS parameters can be set as env variables (capitalized)
+
+
+## Build your own image
+
+The following images are available on dockerhub.
+
+- maastrodocker/quickumls-en
+- maastrodocker/quickumls-nl
+
+If you would prefer to build your own image:
+
+From the current folder
+
+    docker build -t maastrodocker/quickumls-en --build-arg SPACYMODEL=<model> .
+    
+SPACYMODEL argument is optional, the default is "en".
+It is recommended to include the spacy language model in the image tag. 
