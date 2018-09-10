@@ -1,16 +1,17 @@
 # QuickUMLS DOCKER IMAGE
 
+UMLS concept extracting using QuickUMLS
 
 ### Create a QuickUMLS database (from an UMLS installation)
 
 QuickUMLS needs a database which is not included in the docker image (because of the UMLS licensing model). 
 To create a QuickUMLS datase execute the following steps.
 
-1. Install UMLS. <umls_installation_path>
+1. [Get](https://www.nlm.nih.gov/research/umls/) and install UMLS. <umls_installation_path>
 2. Create a destination path for quickumls database. <local_quickumls_installation_path>
 3. Share the created paths with docker, using docker filesharing [see here](https://stackoverflow.com/questions/45122459/docker-mounts-denied-the-paths-are-not-shared-from-os-x-and-are-not-known
 )
-4. Run a docker container for the installation, where you mount the umls installation and quickumlsdb destination paths.
+4. Run a docker container for the installation, where you mount the UMLS installation and quickumlsdb destination paths.
 
         $ docker run --rm -v "<umls_installation_path>:/data/umls" -v "<local_quickumls_installation_path>:/data/quickumlsdb" -it --entrypoint /bin/bash maastrodocker/quickumls-en 
 
@@ -97,41 +98,27 @@ From the current folder
     docker build -t maastrodocker/quickumls-en --build-arg SPACYMODEL=<model> .
     
 SPACYMODEL argument is optional, the default is "en".
-I included the language of the spacy model in the imagetag. 
-Be carefull UMLS uses ISO 639-2 for languages (e.g. nl vs DUT).
+It is recommended to include the spacy language model in the imagetag. 
+Be carefull UMLS uses ISO 639-2 for languages.
 
 
-### Develop
+### Development using Docker (required for Windows)
     
 #### IntelliJ IDEA
 
-Pull or build quickumls container
+1. Pull or build quickumls container
+2. Install plugins:
+    - Intellij Python Language
+    - Intellij Docker Integration
+3. Install [Python interpreter](https://www.jetbrains.com/help/idea/configuring-available-python-sdks.html)
+4. Select docker and correct docker image
+5. Edit run/debug configuration of your pythonscript
+    - Set Python interpreter to the docker interpreter
+    - Set working directory
+    - Set docker container settings
+        - Set volume bindings
+        - Set PYTHONPATH /opt/pythonmodules:/opt/QuickUMLS
     
-Install plugins:
-- Intellij Python Language
-- Intellij Docker Integration
+                -v C:/git/nlp/maastro/QuickUMLS:/data/quickumlsdb -e PYTHONPATH=/opt/pythonmodules
     
-https://www.jetbrains.com/help/idea/configuring-available-python-sdks.html
-- Add python interpreter
-- Select docker and correct docker image
-
-In run/debug configuration of your pythonscript
-- Set Python interpreter to the docker interpreter
-- Set working directory
-- Set docker container settings
-    - Set volume bindings
-    - Set PYTHONPATH /opt/pythonmodules:/opt/QuickUMLS
-    
-    
-    -v C:/git/nlp/maastro/QuickUMLS:/data/quickumlsdb -e PYTHONPATH=/opt/pythonmodules
-    
-    
-    
-- `quickumls_fp` is the directory where the QuickUMLS data files are installed. Docker default = /data/quickumlsdb
-- `overlapping_criteria` (optional, default: "score") is the criteria used to deal with overlapping concepts; choose "score" if the matching score of the concepts should be consider first, "length" if the longest should be considered first instead.
-- `threshold` (optional, default: 0.7) is the minimum similarity value between strings.
-- `similarity_name` (optional, default: "jaccard") is the name of similarity to use. Choose between "dice", "jaccard", "cosine", or "overlap".
-- `window` (optional, default: 5) is the maximum number of tokens to consider for matching.
-- `accepted_semtypes` (optional, default: see `constants.py`) is the set of UMLS semantic types concepts should belong to. Semantic types are identified by the letter "T" followed by three numbers (e.g., "T131", which identifies the type *"Hazardous or Poisonous Substance"*). See [here](https://metamap.nlm.nih.gov/Docs/SemanticTypes_2013AA.txt) for the full list.
-
-env variables are capitalized
+6. QuickUMLS parameters can be set as env variables (capitalized)
