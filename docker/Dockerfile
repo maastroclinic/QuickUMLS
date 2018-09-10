@@ -4,7 +4,8 @@ MAINTAINER Sander Puts
 #clone and install QuickUMLS from github
 WORKDIR /opt
 #RUN git clone https://github.com/Georgetown-IR-Lab/QuickUMLS.git
-RUN git clone -b feature/docker-multilanguage https://github.com/maastroclinic/QuickUMLS
+#RUN git clone -b feature/docker-multilanguage https://github.com/maastroclinic/QuickUMLS
+RUN git clone https://github.com/maastroclinic/QuickUMLS.git
 
 WORKDIR /opt/QuickUMLS
 RUN pip install -r  requirements.txt

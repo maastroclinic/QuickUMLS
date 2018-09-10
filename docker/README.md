@@ -15,7 +15,7 @@ To create a QuickUMLS datase execute the following steps.
 
         $ docker run --rm -v "<umls_installation_path>:/data/umls" -v "<local_quickumls_installation_path>:/data/quickumlsdb" -it --entrypoint /bin/bash maastrodocker/quickumls-en 
 
-5. Install the quickumls database, as decribed in the [non-docker manual](https://github.com/Georgetown-IR-Lab/QuickUMLS#how-to-get-the-system-initialized) How To get the System Initialized (step 2 only). Be carefull UMLS uses ISO 639-2 for languages). Example for the Dutch language.
+5. Install the quickumls database, as decribed in the ["How To get the System Initialized (step 2)"](https://github.com/Georgetown-IR-Lab/QuickUMLS#how-to-get-the-system-initialized). Be carefull UMLS uses ISO 639-2 for languages). Example for the Dutch language.
 
         bash-4.4# python install.py /data/umls /data/quickumlsdb -E DUT
 
@@ -42,19 +42,20 @@ Solutions:
  
 #### Add an existing QuickUMLS installation to an image
     
-1. Clone this repository.
-2. Relative to the Dockerfile create the directory ./data/quickumlsdb 
-3. Copy an existing QuickUMLS installation to the created directory (from step 2), directory structure:
+1. Create a docker file "Dockerfile" with the following content:
 
-      - QuickUMLS/docker/data/quickumlsdb/cui-semtypes.db
-      - QuickUMLS/docker/data/quickumlsdb/umls-simstring.db
+        FROM maastrodocker/quickumls-en:latest
+        ADD quickumls-path /data/quickumlsdb
 
-3. The English language is set as default, if you prefer another language, edit "DockerfileDataImage" to set the correct FROM image.
-4. Run
+2. Edit the "Dockerfile":
+    - The english image "maastrodocker/quickumls-en:latest" is used as default, change if needed.
+    - Locate this Dockerfile **relative** to an existing docker installation (e.g. quickumls-path), and set the correct quickumls-path.
+    
+3. Build        
         
         $ docker build -t maastrodocker/quickumls-dataimage -f DockerfileDataImage .
 
-The file "DockerfileDataImage" will add a current QuickUMLS installation to a new image.                
+4. The created docker image will contain your quickumls installation and is runnable from windows.               
 
 
 
@@ -112,12 +113,7 @@ Results in the following response (for Dutch QuickUMLS installation):
 
 ## Build your own image
 
-The following images are available on dockerhub.
-
-- maastrodocker/quickumls-en
-- maastrodocker/quickumls-nl
-
-If you would prefer to build your own image:
+Prebuild images can be found on [dockerhub](https://hub.docker.com/u/maastrodocker/), if you prefer to build your own image:
 
 From the current folder
 
