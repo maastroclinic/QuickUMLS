@@ -7,9 +7,9 @@ UMLS concept extracting using QuickUMLS
 QuickUMLS needs a database which is not included in the docker image (because of the UMLS licensing model). 
 To create a QuickUMLS datase execute the following steps.
 
-1. [Get](https://www.nlm.nih.gov/research/umls/) and install UMLS. <umls_installation_path>
+1. [Get](https://www.nlm.nih.gov/research/umls/) and install UMLS. <umls_installation_path> ["Before starting (step 4)"](https://github.com/Georgetown-IR-Lab/QuickUMLS#before-starting)
 2. Create a destination path for quickumls database. <local_quickumls_installation_path>
-3. Share the created paths with docker, using docker filesharing [see here](https://stackoverflow.com/questions/45122459/docker-mounts-denied-the-paths-are-not-shared-from-os-x-and-are-not-known
+3. Make sure the paths are shared with docker, use docker filesharing [see here](https://stackoverflow.com/questions/45122459/docker-mounts-denied-the-paths-are-not-shared-from-os-x-and-are-not-known
 )
 4. Run a docker container for the installation, where you mount the UMLS installation and quickumlsdb destination paths.
 
@@ -53,7 +53,7 @@ Solutions:
     
 3. Build        
         
-        $ docker build -t maastrodocker/quickumls-dataimage -f DockerfileDataImage .
+        $ docker build -t maastrodocker/quickumls-dataimage -f Dockerfile .
 
 4. The created docker image will contain your quickumls installation and is runnable from windows.               
 
