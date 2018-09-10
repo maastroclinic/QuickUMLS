@@ -1,19 +1,51 @@
 # QuickUMLS DOCKER IMAGE
 
-### Build 
 
-    docker build -t maastrodocker/quickumls --build-arg SPACYMODEL=<model> .
-    
-SPACYMODEL argument is optional, the default is "en"
+### Install
+
+1. Install UMLS <umls_installation_path>
+2. Create a destination path for quickumls database <local_quickumls_installation_path>
+3. Share the created paths with docker, using docker filesharing [see here](https://stackoverflow.com/questions/45122459/docker-mounts-denied-the-paths-are-not-shared-from-os-x-and-are-not-known
+)
+4. Run a docker container for installation, where you mount the umls installation and quickumlsdb destination paths.
+
+        $ docker run --rm -v "<umls_installation_path>:/data/umls" -v "<local_quickumls_installation_path>:/data/quickumlsdb" -it --entrypoint /bin/bash maastrodocker/quickumls-en 
+
+5. Install the quickumls database (e.g. for Dutch)
+
+        bash-4.4# python install.py /data/umls /data/quickumlsdb -E DUT
+
+6. Exit the container
+
+        bash-4.4# exit
+        
     
 ### Run 
 
+Running the image as described below will result in a listing TCP connection on the specified port.
+
+Request format is in JSON, with key text for text.
+    
+    {"text": "This is a lung.\nDit is een long."}
+
+NetCat can be used to talk to the application.
+
+    nc localhost 9999
+
+The following request:    
+ 
+    {"text": "This is a lung.\nDit is een long."}
+
+Results in the following response.
+
+    [[{"start": 27, "end": 31, "ngram": "long", "term": "long", "cui": "C0024109", "similarity": 1.0, "semtypes": ["T023"], "preferred": 1}, {"start": 27, "end": 31, "ngram": "long", "term": "long", "cui": "C1278908", "similarity": 1.0, "semtypes": ["T023"], "preferred": 1}]]
+
+
 #### Volume bind (recommended)
 
-    $ docker run --rm -v <local_quickumls_installation>:/data/quickumlsdb -p 9999:9999
-     
-    -it --entrypoint=/bin/bash maastrodocker/quickumls
-        
+    $ docker run --rm -v /data/quickumlsdb:/data/quickumlsdb -p 9999:9999 maastrodocker/quickumls-en
+    
+             
 #### Run data image (Windows)
 
 Under Windows a volume bind will result in the following leveldb [error](https://github.com/google/leveldb/issues/281)
@@ -41,6 +73,25 @@ Solutions:
 3. Run
         
         $ docker build -t maastrodocker/quickumlsdataimage -f DockerfileDataImage .
+                
+
+### Build your own image
+
+The following images are available on dockerhub.
+
+- maastrodocker/quickumls-en
+- maastrodocker/quickumls-nl
+
+If you would prefer to build your own image:
+
+From the current folder
+
+    docker build -t maastrodocker/quickumls-en --build-arg SPACYMODEL=<model> .
+    
+SPACYMODEL argument is optional, the default is "en".
+I included the language of the spacy model in the imagetag. 
+Be carefull UMLS uses ISO 639-2 for languages (e.g. nl vs DUT).
+
 
 ###Develop
     

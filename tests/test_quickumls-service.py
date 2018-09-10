@@ -40,6 +40,6 @@ s.close()
 data_response_obj = {}
 data_response_obj['response'] = json.loads(data_response.decode("utf-8"))
 
-print("received data:", data)
+print("received data:", data_response)
 with open('resources/ignored/data_result.txt', 'w') as outfile:
     json.dump(data_response_obj, outfile)
