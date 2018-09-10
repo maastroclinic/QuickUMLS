@@ -1,4 +1,4 @@
-FROM maastrodocker/quickumls:latest
+FROM maastrodocker/quickumls-en:latest
 MAINTAINER Sander Puts
 
 #OPTIONAL copy existing quickumls installation to image to prevent leveldb issues with volume mount
