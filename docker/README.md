@@ -23,7 +23,6 @@ To create a QuickUMLS datase execute the following steps.
 
         bash-4.4# exit
         
-    
 ## Run     
 
 ### Volume bind (recommended)
@@ -115,9 +114,9 @@ Results in the following response (for Dutch QuickUMLS installation):
 
 Prebuild images can be found on [dockerhub](https://hub.docker.com/u/maastrodocker/), if you prefer to build your own image:
 
-From the current folder
+From the project root folder
 
-    docker build -t maastrodocker/quickumls-en --build-arg SPACYMODEL=<model> .
+    docker build -t maastrodocker/quickumls-en --build-arg SPACYMODEL=<model> -f docker/Dockerfile . 
     
 SPACYMODEL argument is optional, the default is "en".
 It is recommended to include the spacy language model in the image tag. 
