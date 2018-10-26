@@ -17,7 +17,6 @@ import json
 from quickumls import QuickUMLS
 import constants
 
-
 if (os.environ.get('GRPC','false')=='true'):
     from springcloudstream.grpc.stream import Processor
 else:
@@ -40,16 +39,19 @@ print("quickumls_fp={}, overlapping_criteria={}, threshold={}, similarity_name={
 
 matcher = QuickUMLS(quickumls_fp, overlapping_criteria, threshold, window, similarity_name, min_match_length, accepted_semtypes, verbose)
 
+
 class SetEncoder(json.JSONEncoder):
     def default(self, obj):
         if isinstance(obj, set):
             return list(obj)
         return json.JSONEncoder.default(self, obj)
 
+
 def process(data):
     dto = json.loads(str(data))
     text = dto['text']
     matches = matcher.match(text, best_match=True, ignore_syntax=True)
-    return json.dumps(matches, cls=SetEncoder)
+    return json.dumps(matches, cls=SetEncoder) + '\r\n'
+
 
 Processor(process, sys.argv).start()
